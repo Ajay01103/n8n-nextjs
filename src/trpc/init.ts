@@ -36,8 +36,11 @@ export const createCallerFactory = t.createCallerFactory
 export const baseProcedure = t.procedure
 export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
   if (!ctx.session) {
-    throw new TRPCError({ code: "UNAUTHORIZED" })
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "needs sign in or register",
+    })
   }
 
-  return next({ ctx: { ...ctx, session: ctx.session } })
+  return await next({ ctx: { ...ctx, session: ctx.session } })
 })
