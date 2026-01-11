@@ -21,6 +21,15 @@ export default function Page() {
       },
     }),
   )
+
+  const { mutate: testAI } = useMutation(
+    trpc.testAI.mutationOptions({
+      onSuccess: () => {
+        toast.success("job qued")
+        // queryClient.invalidateQueries(trpc.test.queryOptions())
+      },
+    }),
+  )
   return (
     <div>
       Hello
@@ -36,6 +45,7 @@ export default function Page() {
             onClick={() => mutate()}>
             create workflow
           </Button>
+          <Button onClick={() => testAI()}>testAI</Button>
         </>
       )}
       <br />

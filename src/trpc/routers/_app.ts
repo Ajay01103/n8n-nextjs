@@ -1,5 +1,6 @@
 import { prisma } from "@/db"
-import { createTRPCRouter, protectedProcedure } from "../init"
+import { inngest } from "@/inngest/client"
+import { createTRPCRouter, premiumProcedure, protectedProcedure } from "../init"
 
 export const appRouter = createTRPCRouter({
   getWorkflows: protectedProcedure.query(async ({ ctx }) => {
@@ -11,6 +12,20 @@ export const appRouter = createTRPCRouter({
         name: "test-workflow",
       },
     })
+  }),
+  testAI: protectedProcedure.mutation(async () => {
+    await inngest.send({
+      name: "execute/ai",
+    })
+
+    return { success: true }
+  }),
+  checkPremium: premiumProcedure.query(({ ctx }) => {
+    return {
+      isPremium: true,
+      subscriptions: ctx.customer.activeSubscriptions,
+      message: "You have an active premium subscription!",
+    }
   }),
 })
 
