@@ -9,7 +9,7 @@ const Layout = ({ children }: Props) => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-accent/10">{children}</SidebarInset>
+      <SidebarInset className="bg-accent-foreground">{children}</SidebarInset>
     </SidebarProvider>
   )
 }
