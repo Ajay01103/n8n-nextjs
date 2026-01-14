@@ -4,7 +4,9 @@ import { ErrorBoundary } from "react-error-boundary"
 import { requireAuth } from "@/lib/server-auth-util"
 import {
   WorkflowsContainer,
+  WorkflowsError,
   WorkflowsList,
+  WorkflowsLoading,
 } from "@/modules/workflows/components/workflows"
 import { workflowsParamsLoader } from "@/modules/workflows/server/params-loader"
 import { prefetchWorkflows } from "@/modules/workflows/server/prefetch"
@@ -23,8 +25,8 @@ const Page = async ({ searchParams }: Props) => {
   return (
     <WorkflowsContainer>
       <HydrateClient>
-        <ErrorBoundary fallback={<p>Error!!</p>}>
-          <Suspense fallback={<p>Loading...</p>}>
+        <ErrorBoundary fallback={<WorkflowsError />}>
+          <Suspense fallback={<WorkflowsLoading />}>
             <WorkflowsList />
           </Suspense>
         </ErrorBoundary>
