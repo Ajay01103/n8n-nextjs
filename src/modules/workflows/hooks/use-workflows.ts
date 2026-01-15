@@ -40,3 +40,25 @@ export const useCreateWorkflow = () => {
     }),
   )
 }
+
+/**
+ * Hook to remove a workflow
+ */
+export const useRemoveWorkflow = () => {
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    trpc.workflows.remove.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Workflow ${data.name} removed`)
+        // Invalidate the list query so it refetches without the deleted workflow
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}))
+        // Invalidate the single workflow query
+        queryClient.invalidateQueries(
+          trpc.workflows.getOne.queryOptions({ id: data.id }),
+        )
+      },
+    }),
+  )
+}
