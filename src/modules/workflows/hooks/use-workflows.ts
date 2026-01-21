@@ -12,6 +12,9 @@ import { toast } from "sonner"
 import { useTRPC } from "@/trpc/client"
 import { useWorkflowsParams } from "./use-workflows-params"
 
+/**
+ * Hook to prefetch a workflows
+ */
 export const useSuspenseWorkflows = () => {
   const trpc = useTRPC()
   const [params] = useWorkflowsParams()
@@ -42,6 +45,31 @@ export const useCreateWorkflow = () => {
 }
 
 /**
+ * Hook to update workflow name
+ */
+export const useUpdateWorkflowName = () => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const trpc = useTRPC()
+
+  return useMutation(
+    trpc.workflows.updateName.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`workflow ${data.name} updated`)
+        router.push(`/workflows/${data.id}`)
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}))
+        queryClient.invalidateQueries(
+          trpc.workflows.getOne.queryOptions({ id: data.id }),
+        )
+      },
+      onError: (error) => {
+        toast.error(`Failed to update workflow: ${error.message}`)
+      },
+    }),
+  )
+}
+
+/**
  * Hook to remove a workflow
  */
 export const useRemoveWorkflow = () => {
@@ -61,4 +89,13 @@ export const useRemoveWorkflow = () => {
       },
     }),
   )
+}
+
+/**
+ * Hook to prefetch a single workflow
+ */
+export const useSuspenseWorkflow = (id: string) => {
+  const trpc = useTRPC()
+
+  return useSuspenseQuery(trpc.workflows.getOne.queryOptions({ id }))
 }
